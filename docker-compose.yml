@@ -6,11 +6,8 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_DATABASE: ${MYSQL_DATABASE}
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 'akoarani123456xx11@@@@@'
+      MYSQL_DATABASE: 'payroll_system'
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -28,7 +25,7 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: 'akoarani123456xx11@@@@@'
     depends_on:
       mysql:
         condition: service_healthy
@@ -42,11 +39,17 @@ services:
     container_name: sveltekit
     restart: unless-stopped
     environment:
+      PUBLIC_NAME: 'Zamboanga Del Sur Provincial Government College'
+      PUBLIC_SHORT_NAME: 'ZDSPGC'
+      PUBLIC_DOMAIN: 'payroll@zdspgc.edu.ph'
+      PUBLIC_SYSTEM_NAME: 'Payroll Management System'
+      PUBLIC_SHORT_SYSTEM_NAME: 'PMS'
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: ${MYSQL_DATABASE}
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_USER: root
+      DB_DATABASE: payroll_system
+      DB_PASSWORD: 'akoarani123456xx11@@@@@'
+      JWT_SECRET: 'nmXTImfcFnHvq0ntdp7GBDRcHbPZUtHnxyIMlbVgVxEB2ObRWrRK7AAb8ATPkEQHI2zdNqNxEa8bbTuRjpz0uR'
     depends_on:
       mysql:
         condition: service_healthy
