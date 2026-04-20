@@ -40,7 +40,7 @@
 		BookCheck,
 		Settings
 	} from 'lucide-svelte';
-	import { PUBLIC_NAME, PUBLIC_SHORT_SYSTEM_NAME, PUBLIC_SYSTEM_NAME } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	const { data } = $props<{
 		data: {
@@ -100,8 +100,8 @@
 						<Calculator class="h-4 w-4" />
 					</div>
 					<div class="flex flex-col gap-0.5 leading-none">
-						<span class="font-semibold">{PUBLIC_SHORT_SYSTEM_NAME}</span>
-						<span class="text-xs text-muted-foreground">{PUBLIC_SYSTEM_NAME}</span>
+						<span class="font-semibold">{env.PUBLIC_SHORT_SYSTEM_NAME}</span>
+						<span class="text-xs text-muted-foreground">{env.PUBLIC_SYSTEM_NAME}</span>
 					</div>
 				</SidebarMenuButton>
 			</SidebarMenuItem>

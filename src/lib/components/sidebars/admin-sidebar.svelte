@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_NAME, PUBLIC_SHORT_NAME } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	import { page } from '$app/stores';
 	import {
@@ -88,7 +88,7 @@
 						<GraduationCap class="h-4 w-4" />
 					</div>
 					<div class="flex flex-col gap-0.5 leading-none">
-						<span class="font-semibold">{PUBLIC_SHORT_NAME}</span>
+						<span class="font-semibold">{env.PUBLIC_SHORT_NAME}</span>
 						<span class="text-xs text-muted-foreground">Portal</span>
 					</div>
 				</SidebarMenuButton>

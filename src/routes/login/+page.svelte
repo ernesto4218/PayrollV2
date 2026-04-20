@@ -12,13 +12,9 @@
 	} from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
-	import {
-		PUBLIC_NAME,
-		PUBLIC_SHORT_NAME,
-		PUBLIC_DOMAIN,
-		PUBLIC_SYSTEM_NAME,
-		PUBLIC_SHORT_SYSTEM_NAME
-	} from '$env/static/public';
+
+	import { env } from '$env/dynamic/public';
+
 	import { toast } from 'svelte-sonner';
 
 	let { form }: { form: ActionData } = $props();
@@ -81,14 +77,14 @@
 					<div
 						class="font-['Playfair_Display',serif] text-[20px] leading-tight font-black text-white"
 					>
-						{PUBLIC_SHORT_NAME}
+						{env.PUBLIC_SHORT_NAME}
 					</div>
 					<div class="mt-1 flex items-center gap-1.5">
 						<div class="h-px w-3 bg-[#74c69d]"></div>
 						<span
 							class="text-[8.5px] leading-tight font-bold tracking-[0.13em] text-white/30 uppercase"
 						>
-							{PUBLIC_NAME}
+							{env.PUBLIC_NAME}
 						</span>
 					</div>
 				</div>
@@ -97,7 +93,7 @@
 			<!-- Headline -->
 			<div>
 				<p class="mb-2 text-[10px] font-bold tracking-[0.18em] text-[#74c69d]/60 uppercase">
-					{PUBLIC_SHORT_SYSTEM_NAME} · {PUBLIC_DOMAIN}
+					{env.PUBLIC_SHORT_SYSTEM_NAME} · {env.PUBLIC_DOMAIN}
 				</p>
 				<h2
 					class="font-['Playfair_Display',serif] text-[2.6rem] leading-[1.1] font-black text-white"
@@ -111,7 +107,7 @@
 				</div>
 				<p class="text-[13.5px] leading-[1.85] text-white">
 					Access payslips, compensation records, leave credits, and deductions — one secure portal
-					for all {PUBLIC_SHORT_NAME} personnel.
+					for all {env.PUBLIC_SHORT_NAME} personnel.
 				</p>
 			</div>
 
@@ -121,7 +117,8 @@
 			>
 				<ShieldCheck size={15} class="mt-0.5 shrink-0 text-[#74c69d]/50" />
 				<p class="text-[11.5px] leading-relaxed text-white/60">
-					This system is exclusively for authorized {PUBLIC_NAME} personnel. Unauthorized access is prohibited.
+					This system is exclusively for authorized {env.PUBLIC_NAME} personnel. Unauthorized access is
+					prohibited.
 				</p>
 			</div>
 		</div>
@@ -163,10 +160,10 @@
 				</div>
 				<div>
 					<span class="font-['Playfair_Display',serif] text-lg font-black text-[#1b4332]">
-						{PUBLIC_SHORT_NAME}
+						{env.PUBLIC_SHORT_NAME}
 					</span>
 					<p class="text-[9px] font-bold tracking-widest text-[#2d6a4f]/50 uppercase">
-						{PUBLIC_SYSTEM_NAME}
+						{env.PUBLIC_SYSTEM_NAME}
 					</p>
 				</div>
 			</div>
@@ -176,7 +173,7 @@
 				<div class="mb-3 flex items-center gap-3">
 					<div class="h-px w-6 bg-[#52b788]"></div>
 					<span class="text-[10px] font-black tracking-[0.16em] text-[#2d6a4f]/40 uppercase">
-						{PUBLIC_SYSTEM_NAME}
+						{env.PUBLIC_SYSTEM_NAME}
 					</span>
 				</div>
 				<h1
@@ -185,7 +182,7 @@
 					Welcome back
 				</h1>
 				<p class="mt-2 text-[13.5px] text-[#2d6a4f]/50">
-					Sign in with your {PUBLIC_SHORT_NAME} employee credentials.
+					Sign in with your {env.PUBLIC_SHORT_NAME} employee credentials.
 				</p>
 			</div>
 
@@ -332,7 +329,7 @@
 			<div
 				class="mt-10 flex flex-wrap items-center justify-between gap-2 border-t border-[#2d6a4f]/10 pt-5"
 			>
-				<span class="text-[11px] text-[#2d6a4f]/30">© 2026 {PUBLIC_NAME}</span>
+				<span class="text-[11px] text-[#2d6a4f]/30">© 2026 {env.PUBLIC_NAME}</span>
 				<div class="flex gap-4">
 					<a href="/privacy" class="text-[11px] text-[#2d6a4f]/30 transition hover:text-[#2d6a4f]"
 						>Privacy Policy</a
