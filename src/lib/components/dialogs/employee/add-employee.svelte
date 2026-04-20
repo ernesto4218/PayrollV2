@@ -1,0 +1,272 @@
+<script lang="ts">
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import Label from '$lib/components/ui/label/label.svelte';
+	import * as RadioGroup from '$lib/components/ui/radio-group/index.js';
+	import { Hash, User, Bookmark, Banknote, UserPlus, Check, Briefcase } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+
+	let open = false;
+	let loading = $state(false);
+	let classification = $state('full-time');
+
+	let form = $state({
+		employee_id: '' as number | string,
+		first_name: '',
+		middle_name: '',
+		last_name: '',
+		designation: '',
+		salary: '' as number | string
+	});
+
+	let errors: Record<string, string> = $state({});
+
+	function validate() {
+		errors = {};
+		if (!form.employee_id) errors.employee_id = 'Employee ID is required.';
+		if (!form.first_name.trim()) errors.first_name = 'First name is required.';
+		if (!form.last_name.trim()) errors.last_name = 'Last name is required.';
+		if (!form.designation.trim()) errors.designation = 'Designation is required.';
+		if (!form.salary || parseFloat(String(form.salary)) <= 0)
+			errors.salary = 'Please enter a valid salary.';
+		return Object.keys(errors).length === 0;
+	}
+
+	function resetForm() {
+		form = {
+			employee_id: '',
+			first_name: '',
+			middle_name: '',
+			last_name: '',
+			designation: '',
+			salary: ''
+		};
+		errors = {};
+		classification = 'full-time';
+	}
+
+	async function handleSubmit() {
+		if (!validate()) return;
+		loading = true;
+
+		const payload = {
+			employee_id: form.employee_id,
+			first_name: form.first_name.trim(),
+			middle_name: form.middle_name.trim(),
+			last_name: form.last_name.trim(),
+			designation: form.designation.trim(),
+			classification,
+			salary: form.salary
+		};
+
+		try {
+			const res = await fetch('/API/POST/add-employee', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
+			});
+
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				throw new Error(data.message ?? `Server error ${res.status}`);
+			}
+
+			toast.success('Employee added successfully!');
+			resetForm();
+		} catch (e: any) {
+			toast.error(e.message || 'Failed to save. Please try again.');
+		} finally {
+			loading = false;
+		}
+	}
+</script>
+
+<Dialog.Root>
+	<Dialog.Trigger>
+		<Button
+			size="lg"
+			class="gap-2 rounded-lg bg-emerald-500 px-5 font-semibold text-white shadow-md shadow-emerald-200 hover:bg-emerald-600"
+		>
+			<UserPlus class="size-4" />
+			Add Employee
+		</Button>
+	</Dialog.Trigger>
+
+	<Dialog.Content class="max-w-lg overflow-hidden rounded-2xl border border-emerald-100 p-0">
+		<!-- Header -->
+		<Dialog.Header
+			class="flex-row items-start gap-3.5 border-b border-emerald-100 bg-emerald-50 px-6 pt-6 pb-4"
+		>
+			<div class="flex h-10 w-10 min-w-10 items-center justify-center rounded-xl bg-emerald-500">
+				<UserPlus class="size-5 text-white" />
+			</div>
+			<div>
+				<Dialog.Title class="text-base font-semibold text-emerald-950">Add employee</Dialog.Title>
+				<Dialog.Description class="mt-0.5 text-[13px] text-gray-500">
+					Register a new employee to the database
+				</Dialog.Description>
+			</div>
+		</Dialog.Header>
+
+		<!-- Body -->
+		<div class="flex flex-col gap-4 px-6 py-5">
+			<!-- Employee ID -->
+			<div class="flex flex-col gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<Hash class="size-3 text-emerald-500" />
+					<Label class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase"
+						>Employee ID</Label
+					>
+				</div>
+				<Input
+					type="number"
+					placeholder="e.g. 10042"
+					bind:value={form.employee_id}
+					class="max-w-40 border-gray-200 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+				/>
+				{#if errors.employee_id}
+					<span class="text-[12px] text-red-500">{errors.employee_id}</span>
+				{/if}
+			</div>
+
+			<!-- Name -->
+			<div class="flex flex-col gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<User class="size-3 text-emerald-500" />
+					<Label class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase"
+						>Full name</Label
+					>
+				</div>
+				<div class="flex gap-2">
+					<Input
+						type="text"
+						placeholder="First name"
+						bind:value={form.first_name}
+						class="border-gray-200 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+					/>
+					<Input
+						type="text"
+						placeholder="Middle name"
+						bind:value={form.middle_name}
+						class="border-gray-200 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+					/>
+					<Input
+						type="text"
+						placeholder="Last name"
+						bind:value={form.last_name}
+						class="border-gray-200 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+					/>
+				</div>
+				{#if errors.first_name || errors.last_name}
+					<span class="text-[12px] text-red-500">{errors.first_name || errors.last_name}</span>
+				{/if}
+			</div>
+
+			<!-- Designation -->
+			<div class="flex flex-col gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<Briefcase class="size-3 text-emerald-500" />
+					<Label class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase"
+						>Designation</Label
+					>
+				</div>
+				<Input
+					type="text"
+					placeholder="e.g. Instructor"
+					bind:value={form.designation}
+					class="border-gray-200 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+				/>
+				{#if errors.designation}
+					<span class="text-[12px] text-red-500">{errors.designation}</span>
+				{/if}
+			</div>
+
+			<!-- Classification -->
+			<div class="flex flex-col gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<Bookmark class="size-3 text-emerald-500" />
+					<Label class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase"
+						>Classification</Label
+					>
+				</div>
+				<RadioGroup.Root bind:value={classification} class="flex gap-2">
+					{#each [['full-time', 'Full-time'], ['part-time', 'Part-time']] as [val, label]}
+						<label
+							for="r-{val}"
+							class="flex flex-1 cursor-pointer items-center gap-2 rounded-lg border px-3.5 py-2.5 text-[13px] font-medium
+              {classification === val
+								? 'border-emerald-400 bg-emerald-50 text-emerald-800'
+								: 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'}"
+						>
+							<RadioGroup.Item value={val} id="r-{val}" class="hidden" />
+							<div
+								class="flex h-3.5 w-3.5 items-center justify-center rounded-full border-[1.5px]
+                {classification === val ? 'border-emerald-500' : 'border-gray-300'}"
+							>
+								{#if classification === val}
+									<div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+								{/if}
+							</div>
+							{label}
+						</label>
+					{/each}
+				</RadioGroup.Root>
+			</div>
+
+			<!-- Salary -->
+			<div class="flex flex-col gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<Banknote class="size-3 text-emerald-500" />
+					<Label class="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+						{classification === 'full-time' ? 'Monthly salary' : 'Hourly rate'}
+					</Label>
+				</div>
+				<div class="relative max-w-50">
+					<span
+						class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[13px] text-gray-400"
+						>₱</span
+					>
+					<Input
+						type="number"
+						placeholder="0.00"
+						bind:value={form.salary}
+						class="border-gray-200 pl-6 text-[13.5px] focus:border-emerald-400 focus:ring-emerald-100"
+					/>
+				</div>
+				{#if errors.salary}
+					<span class="text-[12px] text-red-500">{errors.salary}</span>
+				{/if}
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="flex justify-end gap-2 bg-gray-50 px-6 py-4">
+			<Dialog.Close>
+				<Button
+					variant="outline"
+					class="rounded-lg border-gray-200 text-[13.5px] text-gray-600 hover:bg-gray-100"
+					onclick={resetForm}
+					disabled={loading}
+				>
+					Cancel
+				</Button>
+			</Dialog.Close>
+			<Button
+				class="gap-2 rounded-lg bg-emerald-500 text-[13.5px] text-white shadow-sm shadow-emerald-200 hover:bg-emerald-600"
+				onclick={handleSubmit}
+				disabled={loading}
+			>
+				{#if loading}
+					<div
+						class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white"
+					></div>
+					Saving...
+				{:else}
+					<Check class="size-3.5" />
+					Add employee
+				{/if}
+			</Button>
+		</div>
+	</Dialog.Content>
+</Dialog.Root>
