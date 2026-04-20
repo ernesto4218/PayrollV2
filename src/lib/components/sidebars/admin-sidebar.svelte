@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_NAME, PUBLIC_SHORT_NAME } from '$env/static/public';
+
 	import { page } from '$app/stores';
 	import {
 		Sidebar,

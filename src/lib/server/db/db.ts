@@ -1,18 +1,12 @@
-
-import {
-  DB_DATABASE,
-  DB_HOST,
-  DB_PASSWORD,
-  DB_USER
-} from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 import mysql from "mysql2/promise";
 
 export const db = await mysql.createPool({
-  host: DB_HOST,
-  user: DB_USER,
+  host: env.DB_HOST,
+  user: env.DB_USER,
   password: "",
-  database: DB_DATABASE,
+  database: env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: 10
 });
