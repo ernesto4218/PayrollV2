@@ -1,31 +1,18 @@
-# Build stage
-FROM node:22-alpine AS build
+# Use a Node.js Alpine image for the builder stage
+FROM node:22-alpine AS builder
 WORKDIR /app
-
-ARG PUBLIC_NAME
-ARG PUBLIC_SHORT_NAME
-ARG PUBLIC_DOMAIN
-ARG PUBLIC_SYSTEM_NAME
-ARG PUBLIC_SHORT_SYSTEM_NAME
-
-ENV PUBLIC_NAME=$PUBLIC_NAME
-ENV PUBLIC_SHORT_NAME=$PUBLIC_SHORT_NAME
-ENV PUBLIC_DOMAIN=$PUBLIC_DOMAIN
-ENV PUBLIC_SYSTEM_NAME=$PUBLIC_SYSTEM_NAME
-ENV PUBLIC_SHORT_SYSTEM_NAME=$PUBLIC_SHORT_SYSTEM_NAME
-
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
+RUN npm prune --production
 
-# Run stage
-FROM node:22-alpine AS run
+# Use another Node.js Alpine image for the final stage
+FROM node:22-alpine
 WORKDIR /app
+COPY --from=builder /app/build build/
+COPY --from=builder /app/node_modules node_modules/
+COPY package.json .
+EXPOSE 3000
 ENV NODE_ENV=production
-ENV PORT=3001
-COPY --from=build /app/package.json ./
-COPY --from=build /app/build ./build
-COPY --from=build /app/node_modules ./node_modules
-EXPOSE 3001
-CMD ["node", "build"]
+CMD [ "node", "build" ]
