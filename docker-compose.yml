@@ -22,6 +22,8 @@ services:
     image: phpmyadmin:latest
     container_name: phpmyadmin
     restart: unless-stopped
+    ports:
+      - '8181:80'
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
@@ -38,6 +40,8 @@ services:
       dockerfile: Dockerfile
     container_name: sveltekit
     restart: unless-stopped
+    ports:
+      - '3001:3000'
     environment:
       PUBLIC_NAME: 'Zamboanga Del Sur Provincial Government College'
       PUBLIC_SHORT_NAME: 'ZDSPGC'
